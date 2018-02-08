@@ -27,7 +27,7 @@ mongoose.connect('mongodb://localhost/ibi-ironhack', {
   reconnectTries: Number.MAX_VALUE
 });
 
-// enable sessions here
+// enable sessions here --- - put after cookie parser to avoid session with every request??
 app.use(session({
   store: new MongoStore({
     mongooseConnection: mongoose.connection,
@@ -42,8 +42,8 @@ app.use(session({
 }));
 
 // initialize passport and session
+app.use(flash()); // run flash
 configurePassport();// run before passport.initialize
-app.use(flash()); //
 app.use(passport.initialize());
 app.use(passport.session());
 
