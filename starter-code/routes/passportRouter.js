@@ -45,27 +45,24 @@ router.post('/signup', (req, res, next) => {
       password: hashPass
     });
 
-    newUser.save((err) => {
+    newUser.save((err, user) => {
       if (err) {
         res.render('auth/signup', { message: 'Something went wrong' });
       } else {
-        //        res.redirect('/login');
+        req.login(user, function (err) {
+          if (err) {
+            return next(err);
+          }
+          res.redirect('/private-page');
+        });
       }
     });
   });
-  //  By default, LocalStrategy expects to find credentials in parameters named username and password
-  // user is created in db after the completion of the post the the direct authentication below seems not to work
-  // passport.authenticate('local', {
-  //   successRedirect: '/private-page',
-  //   failureRedirect: '/login',
-  //   failureFlash: true,
-  //   passReqToCallback: true
-  // });
 });
 
 // login ------------------- with passport
 router.get('/login', (req, res, next) => {
-  res.render('passport/login', { 'message': req.flash('error') });
+  res.render('passport/login');
 });
 
 router.post('/login', passport.authenticate('local', {
